@@ -153,7 +153,27 @@ def main():
             st.write("No se ejecutaron operaciones con los parámetros actuales.")
 
     else:
-        st.error("No se pudieron obtener los datos. Verifica la conexión a Internet o las APIs.")
+        st.error("No se pudieron obtener o fusionar los datos.")
+        st.info("Esto puede deberse a que una de las APIs (Binance o Fear & Greed) está bloqueada en tu región o tiene problemas de conexión.")
+        st.markdown("---")
+        st.subheader("Depuración de Datos")
+        
+        # Testing individual components
+        from data_loader import get_fng_data, get_btc_data_from_binance
+        
+        fng_test = get_fng_data()
+        btc_test = get_btc_data_from_binance()
+        
+        if fng_test is not None:
+            st.success("✅ Fear & Greed Index: OK")
+        else:
+            st.error("❌ Fear & Greed Index: Falló")
+            
+        if btc_test is not None:
+            st.success("✅ Precio Bitcoin (Binance): OK")
+        else:
+            st.error("❌ Precio Bitcoin (Binance): Falló")
+            st.info("Si Binance está fallando, intenta usar una VPN o revisa si Streamlit Cloud tiene acceso a api.binance.com.")
 
 if __name__ == "__main__":
     main()
