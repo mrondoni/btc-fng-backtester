@@ -20,21 +20,36 @@ st.markdown("""
     .main {
         background-color: #0e1117;
     }
+    /* Metric Card Styling */
+    [data-testid="stMetricValue"] {
+        color: #f0f2f6 !important;
+        font-weight: 700;
+    }
+    [data-testid="stMetricLabel"] {
+        color: #9ca3af !important;
+        font-size: 0.9rem;
+    }
     .stMetric {
         background-color: #1e2130;
-        padding: 15px;
-        border-radius: 10px;
+        padding: 20px;
+        border-radius: 12px;
         border: 1px solid #3e4251;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     }
-    h1 {
+    h1, h2, h3 {
         color: #f0f2f6;
         font-family: 'Inter', sans-serif;
-        font-weight: 700;
-        text-align: center;
     }
-    .stTable {
+    h1 {
+        text-align: center;
+        padding-bottom: 20px;
+    }
+    /* Table Styling */
+    .stTable, .stDataFrame {
+        background-color: #1e2130;
         border-radius: 10px;
         overflow: hidden;
+        border: 1px solid #3e4251;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -117,7 +132,7 @@ def main():
         st.table(multi_start_df.style.format(format_dynamic))
         
         # Also clean up the dataframe display below it
-        st.dataframe(multi_start_df.T.style.format("{:,.2f}").highlight_max(axis=0, color='#1e3d3d'), use_container_width=True)
+        st.dataframe(multi_start_df.T.style.format("{:,.2f}").highlight_max(axis=0, color='#2e4a8a'), use_container_width=True)
 
         # Yearly Breakdown
         st.markdown("### 🗓️ Resumen Anual (Estrategia Continua)")
