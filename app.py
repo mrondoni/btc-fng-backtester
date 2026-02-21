@@ -24,17 +24,17 @@ st.markdown("""
     [data-testid="stMetricValue"] {
         color: #f0f2f6 !important;
         font-weight: 700;
+        font-size: 1.5rem !important; /* Smaller font to fit on iPad */
     }
     [data-testid="stMetricLabel"] {
         color: #9ca3af !important;
-        font-size: 0.9rem;
+        font-size: 0.8rem;
     }
     .stMetric {
         background-color: #1e2130;
-        padding: 20px;
+        padding: 10px 15px; /* More compact padding */
         border-radius: 12px;
         border: 1px solid #3e4251;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     }
     h1, h2, h3 {
         color: #f0f2f6;
@@ -44,12 +44,10 @@ st.markdown("""
         text-align: center;
         padding-bottom: 20px;
     }
-    /* Table Styling */
+    /* Table Styling - Remove background fill */
     .stTable, .stDataFrame {
-        background-color: #1e2130;
         border-radius: 10px;
         overflow: hidden;
-        border: 1px solid #3e4251;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -93,10 +91,10 @@ def main():
         current_equity = stats_df.iloc[-1]['equity']
 
         col1, col2, col3, col4 = st.columns(4)
-        col1.metric("Equity Final", f"${current_equity:,.2f}", f"{total_roi:.2f}%")
-        col2.metric("Beneficio Total", f"${total_profit:,.2f}")
-        col3.metric("Operaciones", len(trades_df))
-        col4.metric("Días Analizados", len(stats_df))
+        col1.metric("Equity Final", f"{int(current_equity):,}", f"{total_roi:.0f}%")
+        col2.metric("Beneficio Total", f"{int(total_profit):,}")
+        col3.metric("Operaciones", f"{len(trades_df)}")
+        col4.metric("Días Analizados", f"{len(stats_df)}")
 
         # Main Charts
         st.markdown("### 📊 Evolución del Mercado e Índice")
@@ -126,21 +124,21 @@ def main():
         # Formatting the multi-start table to look like the image
         def format_dynamic(val):
             if isinstance(val, (int, float)):
-                return f"{val:,.2f}"
+                return f"{int(val):,}" if abs(val) > 10 else f"{val:,.1f}"
             return val
 
         st.table(multi_start_df.style.format(format_dynamic))
         
-        # Also clean up the dataframe display below it
-        st.dataframe(multi_start_df.T.style.format("{:,.2f}").highlight_max(axis=0, color='#2e4a8a'), use_container_width=True)
+        # Also clean up the dataframe display below it - Removed highlight
+        st.dataframe(multi_start_df.T.style.format("{:,.0f}"), use_container_width=True)
 
         # Yearly Breakdown
         st.markdown("### 🗓️ Resumen Anual (Estrategia Continua)")
         st.dataframe(yearly_df.style.format({
-            "Starting Equity": "${:,.2f}",
-            "Ending Equity": "${:,.2f}",
-            "Profit/Loss": "${:,.2f}",
-            "ROI (%)": "{:,.2f}%"
+            "Starting Equity": "{:,.0f}",
+            "Ending Equity": "{:,.0f}",
+            "Profit/Loss": "{:,.0f}",
+            "ROI (%)": "{:,.1f}%"
         }), use_container_width=True)
 
         # Optimization Section
@@ -151,7 +149,7 @@ def main():
                 st.table(opt_df.style.format({
                     "Best Buy Threshold": "{:.0f}",
                     "Best Sell Threshold": "{:.0f}",
-                    "Max ROI (%)": "{:,.2f}%"
+                    "Max ROI (%)": "{:,.1f}%"
                 }))
                 st.info("💡 Consejo: Los umbrales que maximizan el ROI cambian según la volatilidad de cada año.")
 
@@ -159,9 +157,9 @@ def main():
         st.markdown("### 📝 Historial de Operaciones")
         if not trades_df.empty:
             st.dataframe(trades_df.style.format({
-                "price": "${:,.2f}",
-                "amount_usd": "${:,.2f}",
-                "amount_btc": "{:,.2f}", 
+                "price": "{:,.0f}",
+                "amount_usd": "{:,.0f}",
+                "amount_btc": "{:,.3f}", 
                 "fng": "{:.0f}"
             }), use_container_width=True)
         else:
